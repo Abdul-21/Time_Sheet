@@ -1,3 +1,3 @@
 # Time_Sheet
 
-Time sheet was a python semester
+Some python I wrote that would update my work schedule for me using some web automation called selenium 
