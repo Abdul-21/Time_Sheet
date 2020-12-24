@@ -1,9 +1,26 @@
 import selenium
-import time
+import time, os
+import pickle #use for storing credentials
 from selenium.webdriver.common.keys import Keys
 from selenium import webdriver
+from googleapiclient.discovery import build
+from google_auth_oauthlib.flow import InstalledAppFlow #google auth client
 # Using Chrome to access web
+SCOPES = ['https://www.googleapis.com/auth/calendar.readonly'] #reading google calendar
 def main():
+    creds = None
+    if os.path.exists('token.pkl'):
+        with open('token.pkl', 'rb') as token:
+            creds = pickle.load(token)
+    else:
+        flow = InstalledAppFlow.from_client_secrets_file('credentials.json', SCOPES)
+        creds = flow.run_local_server(port=0)
+        pickle.dump(creds, open("token.pkl","wb"))# file dump for creds reuse
+    service = build('calendar', 'v3', credentials=creds) # building google service
+
+    res = service.calendarList().list().execute()
+    for i in range(4):
+        print(res["items"][i]["id"])
     driver = webdriver.Chrome() # Open the website
     driver.get('https://myu.umn.edu') # id_box = driver.find_element_by_id('fakebox-input')
     element = driver.find_element_by_id("username")
@@ -15,8 +32,9 @@ def main():
     line= f.readlines()
     pass_box.send_keys(line)
     f.close
+    driver.implicitly_wait(20)
     # Find login button
-    driver.find_element_by_css_selector('body>main>div>div>div.col-md-7.col-sm-6>form>div.idp3_form-submit-container>button').click()
+    driver.find_element_by_css_selector('#homepageTabList>li.swiper-slide.myu_fx-150ms.active>a').click()
     # Click login
     driver.implicitly_wait(20)
     driver.find_element_by_css_selector('#homepageTabList>li:nth-child(4)>a').click()

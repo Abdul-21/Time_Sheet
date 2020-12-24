@@ -1,4 +1,8 @@
-Lib\
-Scripts\
-Include\
+Lib/
+Scripts/
+Include/
+debug.log
 pass.txt
+credentials.json
+*.pkl
+*.cfg
