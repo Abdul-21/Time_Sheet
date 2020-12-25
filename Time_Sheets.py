@@ -1,5 +1,5 @@
 import selenium
-import time, os
+import time, os, datetime
 import pickle #use for storing credentials
 from selenium.webdriver.common.keys import Keys
 from selenium import webdriver
@@ -18,9 +18,23 @@ def main():
         pickle.dump(creds, open("token.pkl","wb"))# file dump for creds reuse
     service = build('calendar', 'v3', credentials=creds) # building google service
 
+    # event = service.events().get(calendarId='umn.edu_sqh7d4uvk4n22m9kkra5ueh4f0@group.calendar.google.com', eventId='eventId').execute()
+    # print(event['summary'])
+    calendarList = {} #change to dict with the calendarId
+    cal_val = []
     res = service.calendarList().list().execute()
-    for i in range(4):
-        print(res["items"][i]["id"])
+    for i in range(len(res["items"])):
+        calendarList[res["items"][i]["summary"]] = res["items"][i]["id"] #Listed names of all calendars
+        cal_val.append(res["items"][i]["summary"])
+        print(i,res["items"][i]["summary"])
+    val = input("Choose the calendar you want to use ? ")
+    print(cal_val[int(val)])
+    startoftheweek = datetime.datetime.today()  - datetime.timedelta(days=datetime.datetime.today().weekday() % 7)
+    start = startoftheweek.isoformat() + 'Z' # 'Z' indicates UTC time
+    events_res = service.events().list(calendarId=calendarList[cal_val[int(val)]], timeMin=start, maxResults=8).execute()
+    for i in range(len(events_res["items"])):
+        print(events_res["items"][i]["summary"])
+    return None
     driver = webdriver.Chrome() # Open the website
     driver.get('https://myu.umn.edu') # id_box = driver.find_element_by_id('fakebox-input')
     element = driver.find_element_by_id("username")
