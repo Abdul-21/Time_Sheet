@@ -18,8 +18,6 @@ def main():
         pickle.dump(creds, open("token.pkl","wb"))# file dump for creds reuse
     service = build('calendar', 'v3', credentials=creds) # building google service
 
-    # event = service.events().get(calendarId='umn.edu_sqh7d4uvk4n22m9kkra5ueh4f0@group.calendar.google.com', eventId='eventId').execute()
-    # print(event['summary'])
     calendarList = {} #change to dict with the calendarId
     cal_val = []
     res = service.calendarList().list().execute()
@@ -85,30 +83,6 @@ def main():
         shift = driver.find_element_by_id(code_report)
         shift.send_keys(Keys.ARROW_DOWN)
 
-
-    # for i in range(1, 6):
-    #     times = driver.find_element_by_id(r)
-    #     times.send_keys("8:00:00AM")
-    #     # r=r[:11]+str(int(r[11])+1)+r[12:]
-    #     r= r[:13]+str(int(r[13])+1)
-    #     t2= driver.find_element_by_id(c)
-    #     t2.send_keys("12:00:00PM")
-    #     c= c[:13]+str(int(c[13])+1)
-    #     t3= driver.find_element_by_id(d)
-    #     t3.send_keys("12:30:00PM")
-    #     d= d[:13]+str(int(d[13])+1)
-    #     t4= driver.find_element_by_id(e)
-    #     t4.send_keys("4:30:00PM")
-    #     e= e[:13]+str(int(e[13])+1)
-    #     el =driver.find_element_by_id(s)
-    #     el.send_keys(Keys.ARROW_DOWN)
-    #     s=s[:4]+str(int(s[4])+1)
-    driver.implicitly_wait(5)
-    driver.find_element_by_css_selector("#TL_LINK_WRK_SUBMIT_PB\$418\$")
-
-    # driver.find_element_by_id("TRC$1").click()
-    # driver.find_element_by_id("TRC$1").send_keys(Keys.ARROW_DOWN)
-    # driver.find_element_by_id("TRC$1").send_keys(Keys.ENTER)
     time.sleep(15)
     driver.quit()
 if __name__ == '__main__':
