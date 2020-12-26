@@ -1,5 +1,5 @@
 import selenium
-import time, os, datetime
+import time, os, datetime, re
 import pickle #use for storing credentials
 from selenium.webdriver.common.keys import Keys
 from selenium import webdriver
@@ -29,12 +29,14 @@ def main():
         print(i,res["items"][i]["summary"])
     val = input("Choose the calendar you want to use ? ")
     print(cal_val[int(val)])
-    startoftheweek = datetime.datetime.today()  - datetime.timedelta(days=datetime.datetime.today().weekday() % 7)
+    Day_Range = datetime.datetime.today()
+    startoftheweek = Day_Range  - datetime.timedelta(days=Day_Range.weekday() % 7)
+    endofweek = Day_Range + datetime.timedelta(days=abs(Day_Range.isoweekday() % 7 - 7))
     start = startoftheweek.isoformat() + 'Z' # 'Z' indicates UTC time
-    events_res = service.events().list(calendarId=calendarList[cal_val[int(val)]], timeMin=start, maxResults=8).execute()
-    for i in range(len(events_res["items"])):
-        print(events_res["items"][i]["summary"])
-    return None
+    end = endofweek.isoformat() + 'Z'
+    print(startoftheweek)
+    print(endofweek)
+
     driver = webdriver.Chrome() # Open the website
     driver.get('https://myu.umn.edu') # id_box = driver.find_element_by_id('fakebox-input')
     element = driver.find_element_by_id("username")
@@ -57,28 +59,50 @@ def main():
     driver.switch_to.frame("ptifrmtgtframe")
     driver.implicitly_wait(10)
     driver.find_element_by_css_selector("#DERIVED_TL_WEEK_PREV_WK_BTN")
-    r ="PUNCH_TIME_1$0"
-    c= "PUNCH_TIME_2$0"
-    d= "PUNCH_TIME_3$0"
-    e= "PUNCH_TIME_4$0"
-    s="TRC$0"
-    for i in range(1, 6):
-        times = driver.find_element_by_id(r)
-        times.send_keys("8:00:00AM")
-        # r=r[:11]+str(int(r[11])+1)+r[12:]
-        r= r[:13]+str(int(r[13])+1)
-        t2= driver.find_element_by_id(c)
-        t2.send_keys("12:00:00PM")
-        c= c[:13]+str(int(c[13])+1)
-        t3= driver.find_element_by_id(d)
-        t3.send_keys("12:30:00PM")
-        d= d[:13]+str(int(d[13])+1)
-        t4= driver.find_element_by_id(e)
-        t4.send_keys("4:30:00PM")
-        e= e[:13]+str(int(e[13])+1)
-        el =driver.find_element_by_id(s)
-        el.send_keys(Keys.ARROW_DOWN)
-        s=s[:4]+str(int(s[4])+1)
+    Punch_Start="PUNCH_TIME_1$"
+    c= "PUNCH_TIME_2$"
+    d= "PUNCH_TIME_3$"
+    Punch_End= "PUNCH_TIME_4$"
+    code="TRC$"
+    events_res = service.events().list(calendarId=calendarList[cal_val[int(val)]], timeMin=start, timeMax=end).execute()
+    events = events_res.get("items" , [])
+    for event in events:
+        date = event['start'].get('dateTime', event['start'].get('date'))
+        dateobject = datetime.datetime.strptime(date, "%Y-%m-%dT%H:%M:%S%z")
+        time = dateobject.time()
+        time_start = Punch_Start+str(dateobject.weekday())
+        times = driver.find_element_by_id(time_start)
+        times.send_keys(str(time))
+
+        end_date = event['end'].get('dateTime', event['end'].get('date'))
+        end_dateobject = datetime.datetime.strptime(end_date, "%Y-%m-%dT%H:%M:%S%z")
+        time_endObj = end_dateobject.time()
+        time_end = Punch_End+str(dateobject.weekday())
+        PunchOut = driver.find_element_by_id(time_end)
+        PunchOut.send_keys(str(time_endObj))
+
+        code_report = code + str(dateobject.weekday())
+        shift = driver.find_element_by_id(code_report)
+        shift.send_keys(Keys.ARROW_DOWN)
+
+
+    # for i in range(1, 6):
+    #     times = driver.find_element_by_id(r)
+    #     times.send_keys("8:00:00AM")
+    #     # r=r[:11]+str(int(r[11])+1)+r[12:]
+    #     r= r[:13]+str(int(r[13])+1)
+    #     t2= driver.find_element_by_id(c)
+    #     t2.send_keys("12:00:00PM")
+    #     c= c[:13]+str(int(c[13])+1)
+    #     t3= driver.find_element_by_id(d)
+    #     t3.send_keys("12:30:00PM")
+    #     d= d[:13]+str(int(d[13])+1)
+    #     t4= driver.find_element_by_id(e)
+    #     t4.send_keys("4:30:00PM")
+    #     e= e[:13]+str(int(e[13])+1)
+    #     el =driver.find_element_by_id(s)
+    #     el.send_keys(Keys.ARROW_DOWN)
+    #     s=s[:4]+str(int(s[4])+1)
     driver.implicitly_wait(5)
     driver.find_element_by_css_selector("#TL_LINK_WRK_SUBMIT_PB\$418\$")
 
