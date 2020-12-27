@@ -6,7 +6,7 @@ echo "Installing dependencies"
 pip install --upgrade pip
 python3 -m pip install --user virtualenv
 python3 -m venv .
-source $1/Scripts/activate
+source Scripts/activate
 pip install -r requirements.txt
 if [ -e "$file" ]; then
     echo "Google Api Credentials found"
