@@ -11,7 +11,7 @@ pip install -r requirements.txt
 if [ -e "$file" ]; then
     echo "Google Api Credentials found"
 else
-    echo "Google Api Credentials does exist. Please down Credentials from https://developers.google.com/calendar/quickstart/python#step_3_set_up_the_sample"
+    echo "Google Api Credentials does exist. Please down Credentials from https://developers.google.com/calendar/quickstart/python"
 fi
 if [ -e "$file2" ]; then
     echo "Pass.txt exists"
