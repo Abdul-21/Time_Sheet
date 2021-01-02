@@ -28,8 +28,9 @@ def main():
     val = input("Choose the calendar you want to use ? ")
     print(cal_val[int(val)])
     Day_Range = datetime.datetime.today()
+    Day_Range= Day_Range.replace(hour=0, minute=0, second=0)
     startoftheweek = Day_Range  - datetime.timedelta(days=Day_Range.weekday() % 7)
-    endofweek = Day_Range + datetime.timedelta(days=abs(Day_Range.isoweekday() % 7 - 7))
+    endofweek =  startoftheweek + datetime.timedelta(days=7)
     start = startoftheweek.isoformat() + 'Z' # 'Z' indicates UTC time
     end = endofweek.isoformat() + 'Z'
     print(startoftheweek)
@@ -37,6 +38,7 @@ def main():
 
     driver = webdriver.Chrome() # Open the website
     driver.get('https://myu.umn.edu') # id_box = driver.find_element_by_id('fakebox-input')
+    driver.implicitly_wait(5)
     element = driver.find_element_by_id("username")
     element.send_keys("ibrah171")
     # Find password box
