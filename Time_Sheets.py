@@ -28,7 +28,7 @@ def main():
     val = input("Choose the calendar you want to use ? ")
     print(cal_val[int(val)])
     Day_Range = datetime.datetime.today()
-    Day_Range= Day_Range.replace(hour=0, minute=0, second=0)
+    Day_Range = Day_Range.replace(hour=0, minute=0, second=0)
     startoftheweek = Day_Range  - datetime.timedelta(days=Day_Range.weekday() % 7)
     endofweek =  startoftheweek + datetime.timedelta(days=7)
     start = startoftheweek.isoformat() + 'Z' # 'Z' indicates UTC time
@@ -54,7 +54,7 @@ def main():
     # Click login
     driver.implicitly_wait(20)
     driver.find_element_by_css_selector('#homepageTabList>li:nth-child(4)>a').click()
-    driver.find_element_by_css_selector('#IS_AC_RESPONSE>div>div>div.aw_page_content.container>div:nth-child(1)>div>div>a').click()
+    driver.find_element_by_css_selector('#IS_AC_RESPONSE>div>div>div.aw_page_content.container>div:nth-child(2)>div>div>a').click()
     driver.implicitly_wait(5)
     driver.switch_to.frame("ptifrmtgtframe")
     driver.implicitly_wait(10)
